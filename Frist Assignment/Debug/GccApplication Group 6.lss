@@ -1,0 +1,233 @@
+
+GccApplication Group 6.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000014a  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  0000019e  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  0000019e  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000001d0  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000020  00000000  00000000  0000020c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   000007b9  00000000  00000000  0000022c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 0000058b  00000000  00000000  000009e5  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   000002f1  00000000  00000000  00000f70  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000024  00000000  00000000  00001264  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000336  00000000  00000000  00001288  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    00000240  00000000  00000000  000015be  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000010  00000000  00000000  000017fe  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   8:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 36 00 	call	0x6c	; 0x6c <main>
+  64:	0c 94 a3 00 	jmp	0x146	; 0x146 <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <main>:
+#include "bit_math.h"
+
+
+int main(void)
+{
+  CLEAR_BIT(DDRB,0); //PB0 as input to Buzzer
+  6c:	b8 98       	cbi	0x17, 0	; 23
+  CLEAR_BIT(DDRB,4); //PB4 as input to Relay
+  6e:	bc 98       	cbi	0x17, 4	; 23
+  CLEAR_BIT(DDRD,2); //PD2 as input to Led 0,1,2
+  70:	8a 98       	cbi	0x11, 2	; 17
+  
+  SET_BIT(DDRA,3);   //PA3 Buzzer   an output pin
+  72:	d3 9a       	sbi	0x1a, 3	; 26
+  SET_BIT(DDRA,2);   //PA2 Relay    an output pin
+  74:	d2 9a       	sbi	0x1a, 2	; 26
+  SET_BIT(DDRC,2);   //PC2  Led 0   an output pin
+  76:	a2 9a       	sbi	0x14, 2	; 20
+  SET_BIT(DDRC,7);   //PC7  Led 1   an output pin
+  78:	a7 9a       	sbi	0x14, 7	; 20
+  SET_BIT(DDRD,3);   //PD3  Led 2   an output pin
+  7a:	8b 9a       	sbi	0x11, 3	; 17
+ 
+  
+    while (1) 
+    {
+		if(GET_BIT(PINB,0)==1){ //BUTTON Active high
+  7c:	b0 9b       	sbis	0x16, 0	; 22
+  7e:	14 c0       	rjmp	.+40     	; 0xa8 <main+0x3c>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  80:	2f ef       	ldi	r18, 0xFF	; 255
+  82:	86 e7       	ldi	r24, 0x76	; 118
+  84:	91 e0       	ldi	r25, 0x01	; 1
+  86:	21 50       	subi	r18, 0x01	; 1
+  88:	80 40       	sbci	r24, 0x00	; 0
+  8a:	90 40       	sbci	r25, 0x00	; 0
+  8c:	e1 f7       	brne	.-8      	; 0x86 <main+0x1a>
+  8e:	00 c0       	rjmp	.+0      	; 0x90 <main+0x24>
+  90:	00 00       	nop
+			_delay_ms(30);      //debounce time
+			SET_BIT(PORTA,3);   // Buzzer is on 
+  92:	db 9a       	sbi	0x1b, 3	; 27
+  94:	2f ef       	ldi	r18, 0xFF	; 255
+  96:	8d e3       	ldi	r24, 0x3D	; 61
+  98:	99 e4       	ldi	r25, 0x49	; 73
+  9a:	21 50       	subi	r18, 0x01	; 1
+  9c:	80 40       	sbci	r24, 0x00	; 0
+  9e:	90 40       	sbci	r25, 0x00	; 0
+  a0:	e1 f7       	brne	.-8      	; 0x9a <main+0x2e>
+  a2:	00 c0       	rjmp	.+0      	; 0xa4 <main+0x38>
+  a4:	00 00       	nop
+  a6:	ea cf       	rjmp	.-44     	; 0x7c <main+0x10>
+			_delay_ms(1500);    //to realize output
+			}
+			else if(GET_BIT(PINB,4)==1){ //BUTTON Active high
+  a8:	b4 9b       	sbis	0x16, 4	; 22
+  aa:	14 c0       	rjmp	.+40     	; 0xd4 <main+0x68>
+  ac:	2f ef       	ldi	r18, 0xFF	; 255
+  ae:	86 e7       	ldi	r24, 0x76	; 118
+  b0:	91 e0       	ldi	r25, 0x01	; 1
+  b2:	21 50       	subi	r18, 0x01	; 1
+  b4:	80 40       	sbci	r24, 0x00	; 0
+  b6:	90 40       	sbci	r25, 0x00	; 0
+  b8:	e1 f7       	brne	.-8      	; 0xb2 <main+0x46>
+  ba:	00 c0       	rjmp	.+0      	; 0xbc <main+0x50>
+  bc:	00 00       	nop
+				_delay_ms(30);      //debounce time is on
+				SET_BIT(PORTA,2);   // Relay is on
+  be:	da 9a       	sbi	0x1b, 2	; 27
+  c0:	2f ef       	ldi	r18, 0xFF	; 255
+  c2:	87 ea       	ldi	r24, 0xA7	; 167
+  c4:	91 e6       	ldi	r25, 0x61	; 97
+  c6:	21 50       	subi	r18, 0x01	; 1
+  c8:	80 40       	sbci	r24, 0x00	; 0
+  ca:	90 40       	sbci	r25, 0x00	; 0
+  cc:	e1 f7       	brne	.-8      	; 0xc6 <main+0x5a>
+  ce:	00 c0       	rjmp	.+0      	; 0xd0 <main+0x64>
+  d0:	00 00       	nop
+  d2:	d4 cf       	rjmp	.-88     	; 0x7c <main+0x10>
+				_delay_ms(2000);    //to realize output)
+				}
+				else if(GET_BIT(PIND,2)==1){ //BUTTON Active high
+  d4:	82 9b       	sbis	0x10, 2	; 16
+  d6:	28 c0       	rjmp	.+80     	; 0x128 <main+0xbc>
+  d8:	2f ef       	ldi	r18, 0xFF	; 255
+  da:	86 e7       	ldi	r24, 0x76	; 118
+  dc:	91 e0       	ldi	r25, 0x01	; 1
+  de:	21 50       	subi	r18, 0x01	; 1
+  e0:	80 40       	sbci	r24, 0x00	; 0
+  e2:	90 40       	sbci	r25, 0x00	; 0
+  e4:	e1 f7       	brne	.-8      	; 0xde <main+0x72>
+  e6:	00 c0       	rjmp	.+0      	; 0xe8 <main+0x7c>
+  e8:	00 00       	nop
+					_delay_ms(30);      //debounce time
+					SET_BIT(PORTC,2);   // Led 0 is on
+  ea:	aa 9a       	sbi	0x15, 2	; 21
+  ec:	2f ef       	ldi	r18, 0xFF	; 255
+  ee:	89 e6       	ldi	r24, 0x69	; 105
+  f0:	98 e1       	ldi	r25, 0x18	; 24
+  f2:	21 50       	subi	r18, 0x01	; 1
+  f4:	80 40       	sbci	r24, 0x00	; 0
+  f6:	90 40       	sbci	r25, 0x00	; 0
+  f8:	e1 f7       	brne	.-8      	; 0xf2 <main+0x86>
+  fa:	00 c0       	rjmp	.+0      	; 0xfc <main+0x90>
+  fc:	00 00       	nop
+					_delay_ms(500);    //to realize output)
+					SET_BIT(PORTC,7);   // Led 1 is on
+  fe:	af 9a       	sbi	0x15, 7	; 21
+ 100:	2f ef       	ldi	r18, 0xFF	; 255
+ 102:	89 e6       	ldi	r24, 0x69	; 105
+ 104:	98 e1       	ldi	r25, 0x18	; 24
+ 106:	21 50       	subi	r18, 0x01	; 1
+ 108:	80 40       	sbci	r24, 0x00	; 0
+ 10a:	90 40       	sbci	r25, 0x00	; 0
+ 10c:	e1 f7       	brne	.-8      	; 0x106 <main+0x9a>
+ 10e:	00 c0       	rjmp	.+0      	; 0x110 <main+0xa4>
+ 110:	00 00       	nop
+					_delay_ms(500);    //to realize output)
+					SET_BIT(PORTD,3);   // Led 2 is on
+ 112:	93 9a       	sbi	0x12, 3	; 18
+ 114:	2f ef       	ldi	r18, 0xFF	; 255
+ 116:	89 e6       	ldi	r24, 0x69	; 105
+ 118:	98 e1       	ldi	r25, 0x18	; 24
+ 11a:	21 50       	subi	r18, 0x01	; 1
+ 11c:	80 40       	sbci	r24, 0x00	; 0
+ 11e:	90 40       	sbci	r25, 0x00	; 0
+ 120:	e1 f7       	brne	.-8      	; 0x11a <main+0xae>
+ 122:	00 c0       	rjmp	.+0      	; 0x124 <main+0xb8>
+ 124:	00 00       	nop
+ 126:	aa cf       	rjmp	.-172    	; 0x7c <main+0x10>
+					_delay_ms(500);    //to realize output)
+				}
+	else{
+		CLEAR_BIT(PORTA,3);
+ 128:	db 98       	cbi	0x1b, 3	; 27
+		CLEAR_BIT(PORTA,2);
+ 12a:	da 98       	cbi	0x1b, 2	; 27
+		CLEAR_BIT(PORTC,2);
+ 12c:	aa 98       	cbi	0x15, 2	; 21
+		CLEAR_BIT(PORTC,7);
+ 12e:	af 98       	cbi	0x15, 7	; 21
+		CLEAR_BIT(PORTD,3);
+ 130:	93 98       	cbi	0x12, 3	; 18
+ 132:	2f ef       	ldi	r18, 0xFF	; 255
+ 134:	81 ee       	ldi	r24, 0xE1	; 225
+ 136:	94 e0       	ldi	r25, 0x04	; 4
+ 138:	21 50       	subi	r18, 0x01	; 1
+ 13a:	80 40       	sbci	r24, 0x00	; 0
+ 13c:	90 40       	sbci	r25, 0x00	; 0
+ 13e:	e1 f7       	brne	.-8      	; 0x138 <main+0xcc>
+ 140:	00 c0       	rjmp	.+0      	; 0x142 <main+0xd6>
+ 142:	00 00       	nop
+ 144:	9b cf       	rjmp	.-202    	; 0x7c <main+0x10>
+
+00000146 <_exit>:
+ 146:	f8 94       	cli
+
+00000148 <__stop_program>:
+ 148:	ff cf       	rjmp	.-2      	; 0x148 <__stop_program>
