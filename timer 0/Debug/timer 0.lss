@@ -3,31 +3,31 @@ timer 0.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         0000013c  00000000  00000000  00000074  2**1
+  0 .text         0000012e  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000000  00800060  00800060  000001b0  2**0
+  1 .data         00000000  00800060  00800060  000001a2  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          00000002  00800060  00800060  000001b0  2**0
+  2 .bss          00000002  00800060  00800060  000001a2  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  000001b0  2**0
+  3 .comment      00000030  00000000  00000000  000001a2  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000001e0  2**2
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000001d4  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000028  00000000  00000000  0000021c  2**0
+  5 .debug_aranges 00000028  00000000  00000000  00000210  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   000006a0  00000000  00000000  00000244  2**0
+  6 .debug_info   00000692  00000000  00000000  00000238  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000005b1  00000000  00000000  000008e4  2**0
+  7 .debug_abbrev 000005a2  00000000  00000000  000008ca  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000002b6  00000000  00000000  00000e95  2**0
+  8 .debug_line   000002a4  00000000  00000000  00000e6c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000058  00000000  00000000  0000114c  2**2
+  9 .debug_frame  00000048  00000000  00000000  00001110  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000330  00000000  00000000  000011a4  2**0
+ 10 .debug_str    00000330  00000000  00000000  00001158  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000169  00000000  00000000  000014d4  2**0
+ 11 .debug_loc    00000121  00000000  00000000  00001488  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000018  00000000  00000000  0000163d  2**0
+ 12 .debug_ranges 00000018  00000000  00000000  000015a9  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -44,7 +44,7 @@ Disassembly of section .text:
   20:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
   24:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
   28:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
-  2c:	0c 94 85 00 	jmp	0x10a	; 0x10a <__vector_11>
+  2c:	0c 94 7e 00 	jmp	0xfc	; 0xfc <__vector_11>
   30:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
   34:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
   38:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
@@ -77,171 +77,153 @@ Disassembly of section .text:
   6c:	b2 07       	cpc	r27, r18
   6e:	e1 f7       	brne	.-8      	; 0x68 <.do_clear_bss_loop>
   70:	0e 94 3e 00 	call	0x7c	; 0x7c <main>
-  74:	0c 94 9c 00 	jmp	0x138	; 0x138 <_exit>
+  74:	0c 94 95 00 	jmp	0x12a	; 0x12a <_exit>
 
 00000078 <__bad_interrupt>:
   78:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 0000007c <main>:
-#include "bit_math.h"
-#include <util/delay.h>
-#define TOGGLE(var,bit)      var^=(1<<bit)
 volatile unsigned int counter=0;
 int main(void)
 {
-  7c:	cf 93       	push	r28
-  7e:	df 93       	push	r29
-  80:	00 d0       	rcall	.+0      	; 0x82 <main+0x6>
-  82:	cd b7       	in	r28, 0x3d	; 61
-  84:	de b7       	in	r29, 0x3e	; 62
-	volatile unsigned int counter=0;
-  86:	1a 82       	std	Y+2, r1	; 0x02
-  88:	19 82       	std	Y+1, r1	; 0x01
+	//volatile unsigned int counter=0;
 	//prescaler clk/64   CS02=0  CS01=1  CS00=1
 	TCCR0=(1<<CS00)|(1<<CS01); // 0000 0011
-  8a:	83 e0       	ldi	r24, 0x03	; 3
-  8c:	83 bf       	out	0x33, r24	; 51
+  7c:	83 e0       	ldi	r24, 0x03	; 3
+  7e:	83 bf       	out	0x33, r24	; 51
 	//Generate timer 0 Overflow interrupt enable
 	TIMSK=(1<<TOIE0);
-  8e:	81 e0       	ldi	r24, 0x01	; 1
-  90:	89 bf       	out	0x39, r24	; 57
+  80:	81 e0       	ldi	r24, 0x01	; 1
+  82:	89 bf       	out	0x39, r24	; 57
 	//LED 0 output pin pc2
 	DDRC=(1<<2);     // led 0   pin pc2
-  92:	84 e0       	ldi	r24, 0x04	; 4
-  94:	84 bb       	out	0x14, r24	; 20
-	DDRD=(1<<3);     // led 2   pin pd3
-  96:	88 e0       	ldi	r24, 0x08	; 8
-  98:	81 bb       	out	0x11, r24	; 17
+  84:	84 e0       	ldi	r24, 0x04	; 4
+  86:	84 bb       	out	0x14, r24	; 20
 	DDRC|=(1<<7);    // led 1   pin pc7
-  9a:	a7 9a       	sbi	0x14, 7	; 20
+  88:	a7 9a       	sbi	0x14, 7	; 20
+	DDRD=(1<<3);     // led 2   pin pd3
+  8a:	88 e0       	ldi	r24, 0x08	; 8
+  8c:	81 bb       	out	0x11, r24	; 17
 	//Global interrupt
 	sei();
-  9c:	78 94       	sei
+  8e:	78 94       	sei
 	while(1)
 		{
-		if(counter<=100)//100ms
+		if(counter>=50)//100ms
 		{
 			    PORTC^=(1<<2);
-  9e:	24 e0       	ldi	r18, 0x04	; 4
+  90:	24 e0       	ldi	r18, 0x04	; 4
 				_delay_ms(10);
-				counter=0;
+				//counter=0;
 			}
-			 if(counter<=300)//100ms
+			 if(counter>=150)//100ms
 			{
 				PORTD^=(1<<3);
-  a0:	38 e0       	ldi	r19, 0x08	; 8
-	DDRC|=(1<<7);    // led 1   pin pc7
+  92:	38 e0       	ldi	r19, 0x08	; 8
+	DDRD=(1<<3);     // led 2   pin pd3
 	//Global interrupt
 	sei();
 	while(1)
 		{
-		if(counter<=100)//100ms
-  a2:	89 81       	ldd	r24, Y+1	; 0x01
-  a4:	9a 81       	ldd	r25, Y+2	; 0x02
-  a6:	85 36       	cpi	r24, 0x65	; 101
-  a8:	91 05       	cpc	r25, r1
-  aa:	58 f4       	brcc	.+22     	; 0xc2 <main+0x46>
+		if(counter>=50)//100ms
+  94:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+  98:	90 91 61 00 	lds	r25, 0x0061	; 0x800061 <_edata+0x1>
+  9c:	c2 97       	sbiw	r24, 0x32	; 50
+  9e:	48 f0       	brcs	.+18     	; 0xb2 <main+0x36>
 		{
 			    PORTC^=(1<<2);
-  ac:	85 b3       	in	r24, 0x15	; 21
-  ae:	82 27       	eor	r24, r18
-  b0:	85 bb       	out	0x15, r24	; 21
+  a0:	85 b3       	in	r24, 0x15	; 21
+  a2:	82 27       	eor	r24, r18
+  a4:	85 bb       	out	0x15, r24	; 21
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
-  b2:	8f e3       	ldi	r24, 0x3F	; 63
-  b4:	9c e9       	ldi	r25, 0x9C	; 156
-  b6:	01 97       	sbiw	r24, 0x01	; 1
-  b8:	f1 f7       	brne	.-4      	; 0xb6 <main+0x3a>
-  ba:	00 c0       	rjmp	.+0      	; 0xbc <main+0x40>
-  bc:	00 00       	nop
+  a6:	8f e3       	ldi	r24, 0x3F	; 63
+  a8:	9c e9       	ldi	r25, 0x9C	; 156
+  aa:	01 97       	sbiw	r24, 0x01	; 1
+  ac:	f1 f7       	brne	.-4      	; 0xaa <main+0x2e>
+  ae:	00 c0       	rjmp	.+0      	; 0xb0 <main+0x34>
+  b0:	00 00       	nop
 				_delay_ms(10);
-		        counter=0;
-  be:	1a 82       	std	Y+2, r1	; 0x02
-  c0:	19 82       	std	Y+1, r1	; 0x01
+		      // counter=0;
 	    	}
-			 if(counter<=200)//100ms
-  c2:	89 81       	ldd	r24, Y+1	; 0x01
-  c4:	9a 81       	ldd	r25, Y+2	; 0x02
-  c6:	89 3c       	cpi	r24, 0xC9	; 201
-  c8:	91 05       	cpc	r25, r1
-  ca:	58 f4       	brcc	.+22     	; 0xe2 <main+0x66>
+			 if(counter>=100)//100ms
+  b2:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+  b6:	90 91 61 00 	lds	r25, 0x0061	; 0x800061 <_edata+0x1>
+  ba:	84 36       	cpi	r24, 0x64	; 100
+  bc:	91 05       	cpc	r25, r1
+  be:	48 f0       	brcs	.+18     	; 0xd2 <main+0x56>
 			{
 				PORTC^=(1<<7);
-  cc:	85 b3       	in	r24, 0x15	; 21
-  ce:	80 58       	subi	r24, 0x80	; 128
-  d0:	85 bb       	out	0x15, r24	; 21
-  d2:	8f e3       	ldi	r24, 0x3F	; 63
-  d4:	9c e9       	ldi	r25, 0x9C	; 156
-  d6:	01 97       	sbiw	r24, 0x01	; 1
-  d8:	f1 f7       	brne	.-4      	; 0xd6 <main+0x5a>
-  da:	00 c0       	rjmp	.+0      	; 0xdc <main+0x60>
-  dc:	00 00       	nop
+  c0:	85 b3       	in	r24, 0x15	; 21
+  c2:	80 58       	subi	r24, 0x80	; 128
+  c4:	85 bb       	out	0x15, r24	; 21
+  c6:	8f e3       	ldi	r24, 0x3F	; 63
+  c8:	9c e9       	ldi	r25, 0x9C	; 156
+  ca:	01 97       	sbiw	r24, 0x01	; 1
+  cc:	f1 f7       	brne	.-4      	; 0xca <main+0x4e>
+  ce:	00 c0       	rjmp	.+0      	; 0xd0 <main+0x54>
+  d0:	00 00       	nop
 				_delay_ms(10);
-				counter=0;
-  de:	1a 82       	std	Y+2, r1	; 0x02
-  e0:	19 82       	std	Y+1, r1	; 0x01
+				//counter=0;
 			}
-			 if(counter<=300)//100ms
-  e2:	89 81       	ldd	r24, Y+1	; 0x01
-  e4:	9a 81       	ldd	r25, Y+2	; 0x02
-  e6:	8d 32       	cpi	r24, 0x2D	; 45
-  e8:	91 40       	sbci	r25, 0x01	; 1
-  ea:	d8 f6       	brcc	.-74     	; 0xa2 <main+0x26>
+			 if(counter>=150)//100ms
+  d2:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+  d6:	90 91 61 00 	lds	r25, 0x0061	; 0x800061 <_edata+0x1>
+  da:	86 39       	cpi	r24, 0x96	; 150
+  dc:	91 05       	cpc	r25, r1
+  de:	d0 f2       	brcs	.-76     	; 0x94 <main+0x18>
 			{
 				PORTD^=(1<<3);
-  ec:	82 b3       	in	r24, 0x12	; 18
-  ee:	83 27       	eor	r24, r19
-  f0:	82 bb       	out	0x12, r24	; 18
-  f2:	8f ef       	ldi	r24, 0xFF	; 255
-  f4:	91 ee       	ldi	r25, 0xE1	; 225
-  f6:	44 e0       	ldi	r20, 0x04	; 4
-  f8:	81 50       	subi	r24, 0x01	; 1
-  fa:	90 40       	sbci	r25, 0x00	; 0
-  fc:	40 40       	sbci	r20, 0x00	; 0
-  fe:	e1 f7       	brne	.-8      	; 0xf8 <main+0x7c>
- 100:	00 c0       	rjmp	.+0      	; 0x102 <main+0x86>
- 102:	00 00       	nop
-				_delay_ms(100);
+  e0:	82 b3       	in	r24, 0x12	; 18
+  e2:	83 27       	eor	r24, r19
+  e4:	82 bb       	out	0x12, r24	; 18
+  e6:	8f e3       	ldi	r24, 0x3F	; 63
+  e8:	9c e9       	ldi	r25, 0x9C	; 156
+  ea:	01 97       	sbiw	r24, 0x01	; 1
+  ec:	f1 f7       	brne	.-4      	; 0xea <main+0x6e>
+  ee:	00 c0       	rjmp	.+0      	; 0xf0 <main+0x74>
+  f0:	00 00       	nop
+				_delay_ms(10);
 				counter=0;
- 104:	1a 82       	std	Y+2, r1	; 0x02
- 106:	19 82       	std	Y+1, r1	; 0x01
- 108:	cc cf       	rjmp	.-104    	; 0xa2 <main+0x26>
+  f2:	10 92 61 00 	sts	0x0061, r1	; 0x800061 <_edata+0x1>
+  f6:	10 92 60 00 	sts	0x0060, r1	; 0x800060 <_edata>
+  fa:	cc cf       	rjmp	.-104    	; 0x94 <main+0x18>
 
-0000010a <__vector_11>:
+000000fc <__vector_11>:
 
      }
 }
 //main
 //*****************************
 ISR(TIMER0_OVF_vect){
- 10a:	1f 92       	push	r1
- 10c:	0f 92       	push	r0
- 10e:	0f b6       	in	r0, 0x3f	; 63
- 110:	0f 92       	push	r0
- 112:	11 24       	eor	r1, r1
- 114:	8f 93       	push	r24
- 116:	9f 93       	push	r25
+  fc:	1f 92       	push	r1
+  fe:	0f 92       	push	r0
+ 100:	0f b6       	in	r0, 0x3f	; 63
+ 102:	0f 92       	push	r0
+ 104:	11 24       	eor	r1, r1
+ 106:	8f 93       	push	r24
+ 108:	9f 93       	push	r25
 	counter++;
- 118:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
- 11c:	90 91 61 00 	lds	r25, 0x0061	; 0x800061 <_edata+0x1>
- 120:	01 96       	adiw	r24, 0x01	; 1
- 122:	90 93 61 00 	sts	0x0061, r25	; 0x800061 <_edata+0x1>
- 126:	80 93 60 00 	sts	0x0060, r24	; 0x800060 <_edata>
+ 10a:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+ 10e:	90 91 61 00 	lds	r25, 0x0061	; 0x800061 <_edata+0x1>
+ 112:	01 96       	adiw	r24, 0x01	; 1
+ 114:	90 93 61 00 	sts	0x0061, r25	; 0x800061 <_edata+0x1>
+ 118:	80 93 60 00 	sts	0x0060, r24	; 0x800060 <_edata>
 }
- 12a:	9f 91       	pop	r25
- 12c:	8f 91       	pop	r24
- 12e:	0f 90       	pop	r0
- 130:	0f be       	out	0x3f, r0	; 63
- 132:	0f 90       	pop	r0
- 134:	1f 90       	pop	r1
- 136:	18 95       	reti
+ 11c:	9f 91       	pop	r25
+ 11e:	8f 91       	pop	r24
+ 120:	0f 90       	pop	r0
+ 122:	0f be       	out	0x3f, r0	; 63
+ 124:	0f 90       	pop	r0
+ 126:	1f 90       	pop	r1
+ 128:	18 95       	reti
 
-00000138 <_exit>:
- 138:	f8 94       	cli
+0000012a <_exit>:
+ 12a:	f8 94       	cli
 
-0000013a <__stop_program>:
- 13a:	ff cf       	rjmp	.-2      	; 0x13a <__stop_program>
+0000012c <__stop_program>:
+ 12c:	ff cf       	rjmp	.-2      	; 0x12c <__stop_program>
